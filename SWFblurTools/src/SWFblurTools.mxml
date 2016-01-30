@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009"
+					   xmlns:s="library://ns.adobe.com/flex/spark"
+					   xmlns:mx="library://ns.adobe.com/flex/mx"
+					   width="600"
+					   height="530"
+					   title="swf混淆器"
+					   creationComplete="init(event)"
+					   xmlns:view="view.*">
+	<fx:Script>
+		<![CDATA[
+			import com.pw282.swf.SwfFile;
+			import com.pw282.swf.data.KeyWords;
+			import com.pw282.swf.tags.Tag;
+			import com.pw282.swf.tags.actions.DoABCTag;
+			
+			import flash.display.Sprite;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.core.IUIComponent;
+			import mx.core.UIComponent;
+			import mx.events.FlexEvent;
+			import mx.events.ListEvent;
+			
+			import spark.events.IndexChangeEvent;
+			
+			private var bytes : ByteArray;
+			private var nativePath : String;
+			[Bindable]
+			private var tabBarArray : Array = ["标签", "混淆"];
+			private var tabContainer : Array = [];
+			
+			protected function init(event : FlexEvent) : void
+			{
+				tabContainer = [swfInfoView, blurView];
+				tabBar.selectedIndex = 0;
+				tabBar_changeHandler(null);
+				tabBar.dataProvider = new ArrayCollection(tabBarArray);
+				addEventListener(NativeDragEvent.NATIVE_DRAG_ENTER, onDragInHandler);
+				addEventListener(NativeDragEvent.NATIVE_DRAG_DROP, onDropHandler);
+				this.addEventListener("close_evetn", alertClose);
+			}
+			
+			private function alertClose(evt : Event) : void
+			{
+				this.close();
+			}
+			
+			protected function onDragInHandler(event : NativeDragEvent) : void
+			{
+				var transferable : Clipboard = event.clipboard;
+				
+				if(transferable.hasFormat(ClipboardFormats.FILE_LIST_FORMAT))
+				{
+					var files : Array = transferable.getData(ClipboardFormats.FILE_LIST_FORMAT) as Array;
+					
+					if(files)
+					{
+						var file : File = File(files[0]);
+						
+						if(file && file.name.indexOf(".swf") >= 0)
+						{
+							NativeDragManager.acceptDragDrop(event.currentTarget as InteractiveObject);
+						}
+					}
+				}
+				
+			}
+			
+			protected function onDropHandler(event : NativeDragEvent) : void
+			{
+				var transferable : Clipboard = event.clipboard;
+				
+				if(transferable.hasFormat(ClipboardFormats.FILE_LIST_FORMAT))
+				{
+					var files : Array = transferable.getData(ClipboardFormats.FILE_LIST_FORMAT) as Array;
+					
+					if(files)
+					{
+						var file : File = File(files[0]);
+						
+						if(file && file.name.indexOf(".swf") >= 0)
+						{
+							nativePath = file.nativePath;
+							bytes = FilesUtil.getBytesFromeFile(file.nativePath);
+							var swfFile : SwfFile = new SwfFile(bytes);  
+							var tags : Array = swfFile.tags;
+							var doABCtags : Array = []; 
+							
+							for each(var tag : Tag in tags)
+							{
+								if(tag is DoABCTag)
+								{
+									doABCtags.push(tag);
+								}
+							}
+							blurView.parseTag(doABCtags, swfFile, file.nativePath);
+							swfInfoView.parseData(tags);
+						}
+					}
+				}
+			}
+			
+			protected function tabBar_changeHandler(event : IndexChangeEvent) : void
+			{
+				var tabView : Sprite;
+				
+				for each(tabView in tabContainer)
+				{
+					tabView.visible = false;
+				}
+				tabView = tabContainer[tabBar.selectedIndex];
+				
+				if(tabView)
+				{
+					tabView.visible = true;
+					tabView.x = tabBar.x;
+					tabView.y = tabBar.y + tabBar.height;
+				}
+			}
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	
+	<s:TabBar id="tabBar"
+			  x="29"
+			  y="21"
+			  height="20"
+			  change="tabBar_changeHandler(event)"/>
+	<view:SwfInfoView id="swfInfoView"
+					  x="{tabBar.x}"/>
+	<view:BlurView id="blurView"
+				   x="{tabBar.x}"/>
+	
+</s:WindowedApplication>

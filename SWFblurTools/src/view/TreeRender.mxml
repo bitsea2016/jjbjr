@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TreeItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009"
+					 xmlns:s="library://ns.adobe.com/flex/spark"
+					 xmlns:mx="library://ns.adobe.com/flex/mx"
+					 width="260"
+					 creationComplete="init(event)">
+	<fx:Script>
+		<![CDATA[
+			import mx.controls.CheckBox;
+			import mx.controls.treeClasses.TreeListData;
+			import mx.events.FlexEvent;
+			private var checkBox : CheckBox;
+
+			protected function init(event : FlexEvent) : void
+			{
+				checkBox = new CheckBox();
+				checkBox.selected = false;
+				checkBox.addEventListener(MouseEvent.CLICK, onSelectClick);
+				this.addChild(checkBox);
+			}
+
+			private function onSelectClick(evt : MouseEvent) : void
+			{
+				selected = checkBox.selected;
+			}
+
+			override public function set data(value : Object) : void
+			{
+				super.data = value;
+
+				if(checkBox)
+				{
+					checkBox.selected = selected;
+				}
+			}
+
+			public function get selected() : Boolean
+			{
+				if(listData)
+				{
+					var itemData : TreeListData = listData as TreeListData;
+					var xml : XML = itemData.item.(@label == label.text)[0];
+
+					if(xml && checkBox)
+					{
+						return xml.@select == "true"
+					}
+				}
+				return false;
+			}
+
+			public function set selected(value : Boolean) : void
+			{
+				if(listData)
+				{
+					var itemData : TreeListData = listData as TreeListData;
+					var xml : XML = itemData.item.(@label == label.text)[0];
+
+					if(xml)
+					{
+						setXmlDataSelect(xml, value);
+					}
+				}
+			}
+
+			public function setXmlDataSelect(data : XML, value : Boolean) : void
+			{
+				data.@select = value;
+
+				for each(var xml : XML in data.elements())
+				{
+					xml.@select = value;
+					setXmlDataSelect(xml, value);
+				}
+			}
+
+			override protected function updateDisplayList(unscaledWidth : Number, unscaledHeight : Number) : void
+			{
+				super.updateDisplayList(unscaledWidth, unscaledHeight);
+
+				if(checkBox)
+				{
+					checkBox.y = 10;
+					checkBox.x = disclosureIcon.x + 18;
+					icon.x = checkBox.x + 18;
+					label.x = icon.x + 18;
+				}
+			}
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+</mx:TreeItemRenderer>

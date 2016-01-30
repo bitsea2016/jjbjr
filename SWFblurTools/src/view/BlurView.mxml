@@ -1,0 +1,422 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:fx="http://ns.adobe.com/mxml/2009"
+		   xmlns:s="library://ns.adobe.com/flex/spark"
+		   xmlns:mx="library://ns.adobe.com/flex/mx"
+		   width="100%"
+		   height="100%"
+		   creationComplete="init(event)">
+	<fx:Script>
+		<![CDATA[
+			import com.pw282.swf.SwfFile;
+			import com.pw282.swf.data.KeyWords;
+			import com.pw282.swf.data.abc.Class_info;
+			import com.pw282.swf.data.abc.Cpool_info;
+			import com.pw282.swf.data.abc.Instance_info;
+			import com.pw282.swf.data.abc.Method_body_info;
+			import com.pw282.swf.data.abc.Method_info;
+			import com.pw282.swf.data.abc.Script_info;
+			import com.pw282.swf.data.abc.Traits_info;
+			import com.pw282.swf.tags.Tag;
+			import com.pw282.swf.tags.actions.DoABCTag;
+
+			import mx.controls.Alert;
+			import mx.events.FlexEvent;
+
+			import spark.components.mediaClasses.VolumeBar;
+			[Bindable]
+			private var fileXml : XML = <root label="root"/>;
+			private var swfFile : SwfFile;
+			private var fileName : String;
+			//需要解析的类名
+			private var classNameData : Dictionary = new Dictionary();
+
+
+			protected function init(event : FlexEvent) : void
+			{
+				doAbc_tree.showRoot = false;
+				textArea.text = LocalShareManager.getInstance().get("no_blur");
+			}
+
+			public function parseTag(doABCtags : Array, swfFile : SwfFile, fileName : String) : void
+			{
+				doABCtags.sortOn("Name", Array.DESCENDING);
+
+				for each(var doABCtag : DoABCTag in doABCtags)
+				{
+					if(doABCtag.Name)
+					{
+						addNode(fileXml, doABCtag.Name, doABCtag);
+					}
+				}
+				this.swfFile = swfFile;
+				this.fileName = fileName;
+			}
+
+			protected function startBtnclickHandler(event : MouseEvent) : void
+			{
+				if(swfFile == null)
+				{
+					return;
+				}
+				KeyWords.arrNeedEncryptStr = [];
+
+				var needEncryptClassArray : Array = [];
+				var noEncryptClassArray : Array = [];
+				getClassName(fileXml, needEncryptClassArray, noEncryptClassArray);
+
+				//不需要混淆的字段
+				var noEncryptStr : Array = getWordsByClass(noEncryptClassArray, false, class_select.selected, method_select.selected, field_select.selected);
+				removeEncryptField(noEncryptStr);
+				//noEncryptStr = noEncryptStr.concat(noEncryptClassArray);
+				KeyWords.arrSelfWords = noEncryptStr;
+
+				//trace(noEncryptStr.join("\r"))
+				trace("类不混淆数量:", noEncryptClassArray.length)
+				trace("总共不混淆数量:", KeyWords.arrSelfWords.length)
+
+				//需要混淆的字段
+				var arrNeedEncryptStr : Array = getWordsByClass(needEncryptClassArray, package_select.selected, class_select.selected, method_select.selected, field_select.selected);
+				//arrNeedEncryptStr = arrNeedEncryptStr.concat(needEncryptClassArray);
+				KeyWords.arrNeedEncryptStr = arrNeedEncryptStr.concat(KeyWords.arrNeedEncryptStr);
+
+				//trace(KeyWords.arrNeedEncryptStr.join("\r"))
+				trace("类混淆数量:", needEncryptClassArray.length)
+				trace("总共混淆数量:", KeyWords.arrNeedEncryptStr.length)
+
+				SwfFile.addEncryptDoABCTag = cbAddEncryptDoABCTag.selected;
+
+				swfFile.encrypt();
+				swfFile.encode();
+
+				var strDefaultFileName : String = fileName.replace(".swf", "_encrypt.swf");
+				FilesUtil.saveBytes(strDefaultFileName, swfFile.bt);
+				Alert.show("混淆完毕", "提示", 4, null, alertClose);
+			}
+
+			private function getWordsByClass(classArray : Array, packageSelect : Boolean, classSelect : Boolean, methodSelect : Boolean, fieldSelect : Boolean) : Array
+			{
+				var data : Array = [];
+				var packageArray : Array;
+				var methodArray : Array;
+				var filedsArray : Array;
+
+				if(packageSelect)
+				{
+					packageArray = addEncryptPackageName(classArray);
+				}
+
+				if(methodSelect)
+				{
+					methodArray = addEncryptMethodName(classArray);
+				}
+
+				if(fieldSelect)
+				{
+					filedsArray = addEncryptFieldName(classArray);
+				}
+
+				//包名
+				if(packageSelect)
+				{
+					data = data.concat(packageArray);
+				}
+
+				//类名
+				if(classSelect)
+				{
+					data = data.concat(classArray);
+				}
+
+				//方法
+				if(methodSelect)
+				{
+					data = data.concat(methodArray);
+				}
+
+				//字段
+				if(fieldSelect)
+				{
+					data = data.concat(filedsArray);
+				}
+				return data;
+			}
+
+			//移除不需要加密的字段
+			private function removeEncryptField(array : Array) : void
+			{
+				var noEncrypt : String = textArea.text;
+				var noEncrypts : Array = noEncrypt.split("\r");
+				var len : int = noEncrypts.length;
+				var field : String;
+
+				for(var i : int = 0; i < len; i++)
+				{
+					field = noEncrypts[i];
+
+					if(array.indexOf(field) == -1)
+					{
+						array.push(field);
+					}
+				}
+			}
+
+			private function alertClose(evt : Event) : void
+			{
+				this.dispatchEvent(new Event("close_evetn", true));
+			}
+
+			private function addNode(xml : XML, name : String, doABCtag : DoABCTag) : void
+			{
+				var array : Array = name.split("/");
+
+				if(array.length > 1)
+				{
+					var node : String = array.shift();
+					var xmlList : XMLList = xml.child(node);
+					var newXml : XML;
+
+					if(xmlList.length() == 0)
+					{
+						xml.appendChild(<{node} label={node} ></{node}>);
+						xmlList = xml.child(node);
+					}
+					newXml = xmlList[0];
+					addNode(newXml, array.join("/"), doABCtag);
+				}
+				else
+				{
+					xml.appendChild(<{array[0]} label={array[0]} isFile={true} select={false}/>);
+					classNameData[array[0]] = doABCtag;
+				}
+			}
+
+
+			//根据所选择的，添加需要混淆的属性名字
+			private function addEncryptFieldName(data : Array) : Array
+			{
+				var array : Array = []
+				var method_info : Method_info;
+				var len : int = data.length;
+				var methodName : String;
+				var className : String;
+				var doABCtag : DoABCTag;
+				var tmpArr : Array;
+
+				var instance_info : Instance_info;
+				var class_info : Class_info;
+				var script_info : Script_info;
+				var method_body_info : Method_body_info;
+				var traits_info : Traits_info;
+				var cpool_info : Cpool_info;
+
+				for(var i : int = 0; i < len; i++)
+				{
+					className = data[i];
+					doABCtag = classNameData[className];
+
+					if(doABCtag)
+					{
+						cpool_info = doABCtag.abcFile.cpool_info;
+
+						for each(class_info in doABCtag.abcFile.arrClass)
+						{
+							parseTraits(class_info.arrTraits, array, cpool_info);
+						}
+
+						for each(instance_info in doABCtag.abcFile.arrInstance)
+						{
+							parseTraits(instance_info.arrTraits, array, cpool_info);
+						}
+					}
+				}
+				return array;
+			}
+
+			private function parseTraits(traits : Array, saveArray : Array, cpool_info : Cpool_info) : void
+			{
+				var traits_info : Traits_info;
+				var field : String;
+
+				for each(traits_info in traits)
+				{
+					if(traits_info.traitType == Traits_info.Trait_Const || traits_info.traitType == Traits_info.Trait_Slot)
+					{
+						field = cpool_info.arrString[cpool_info.arrMultiname[traits_info.name - 1].name - 1].str;
+
+						if(saveArray.indexOf(field) == -1 && !KeyWords.isKeyWords(field))
+						{
+							saveArray.push(field);
+						}
+					}
+
+				}
+			}
+
+			//根据所选择的，添加需要混淆的类名
+			private function getClassName(data : XML, encryptArray : Array, noEncryptArray : Array) : void
+			{
+				var label : String;
+				var index : int;
+
+				if(data.@isFile == "true")
+				{
+					label = data.@label.toXMLString();
+
+					if(data.@select == "true")
+					{
+						if(encryptArray.indexOf(label) == -1)
+						{
+							encryptArray.push(label);
+						}
+					}
+					else
+					{
+						if(noEncryptArray.indexOf(label) == -1)
+						{
+							noEncryptArray.push(label);
+						}
+					}
+				}
+
+
+				for each(var xml : XML in data.elements())
+				{
+					getClassName(xml, encryptArray, noEncryptArray);
+				}
+			}
+
+			//根据所选择的，添加需要混淆的方法
+			private function addEncryptMethodName(data : Array) : Array
+			{
+				var array : Array = []
+				var method_info : Method_info;
+				var len : int = data.length;
+				var methodName : String;
+				var className : String;
+				var doABCtag : DoABCTag;
+				var tmpArr : Array;
+
+				for(var i : int = 0; i < len; i++)
+				{
+					className = data[i];
+					doABCtag = classNameData[className];
+
+					if(doABCtag)
+					{
+						for each(method_info in doABCtag.abcFile.arrMethod)
+						{
+							if(method_info.strName == "")
+								continue;
+							tmpArr = method_info.strName.split(".");
+							methodName = tmpArr[tmpArr.length - 1];
+
+							if(array.indexOf(methodName) == -1 && !KeyWords.isKeyWords(methodName))
+							{
+								array.push(methodName);
+							}
+						}
+					}
+				}
+				return array;
+			}
+
+			//根据所选择的，添加需要混淆的包名
+			private function addEncryptPackageName(data : Array) : Array
+			{
+				var array : Array = [];
+				var len : int = data.length;
+				var packageName : String;
+				var className : String;
+				var doABCtag : DoABCTag;
+				var tmpArr : Array;
+
+				for(var i : int = 0; i < len; i++)
+				{
+					className = data[i];
+					doABCtag = classNameData[className];
+
+					if(doABCtag)
+					{
+						tmpArr = doABCtag.Name.split("/");
+						array.push(doABCtag.Name);
+
+						if(tmpArr.length > 1)
+						{
+							tmpArr.pop();
+							packageName = tmpArr.join(".");
+
+							if(array.indexOf(packageName) == -1)
+							{
+								array.push(packageName);
+							}
+
+						}
+					}
+				}
+				return array;
+			}
+
+			protected function textArea_changeHandler(event : Event) : void
+			{
+				LocalShareManager.getInstance().save("no_blur", textArea.text);
+			}
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+
+	<s:Button x="349"
+			  y="10"
+			  label="开始混淆"
+			  click="startBtnclickHandler(event)"/>
+	<mx:Tree id="doAbc_tree"
+			 x="0"
+			 y="0"
+			 width="200"
+			 height="462"
+			 dataProvider="{fileXml}"
+			 itemRenderer="view.TreeRender"
+			 labelField="@label">
+	</mx:Tree>
+	<s:CheckBox x="350"
+				y="38"
+				id="cbAddEncryptDoABCTag"
+				label="错误tag"
+				toolTip="可以过闪客和asv"/>
+	<mx:TextArea id="textArea"
+				 x="211"
+				 y="27"
+				 width="120"
+				 height="434"
+				 change="textArea_changeHandler(event)"/>
+	<s:Label x="210"
+			 y="10"
+			 width="120"
+			 fontSize="13"
+			 text="不需要混淆的字段"
+			 textAlign="center"
+			 verticalAlign="middle"/>
+	<s:CheckBox id="package_select"
+				x="350"
+				y="64"
+				label="包名"
+				enabled="true"
+				selected="true"/>
+	<s:CheckBox id="class_select"
+				x="350"
+				y="90"
+				label="类名"
+				selected="true"/>
+	<s:CheckBox id="method_select"
+				x="350"
+				y="116"
+				label="方法名"
+				selected="true"/>
+	<s:CheckBox id="field_select"
+				x="350"
+				y="142"
+				label="属性名"
+				selected="true"/>
+
+</mx:Canvas>
