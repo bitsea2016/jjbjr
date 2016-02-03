@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <item id="4" type="1" cfg="5170" icon="3001" name="每日必买礼包！" des1="用过都说好~体力50+经验卡10+金币88888" des2="所有玩家购买" num="1" tips="24" price="176" oldprice="518" reset="1" sort_id="1"/>
+  <item id="5" type="1" cfg="6016" icon="5016" name="6级攻击宝石" des1="宝石恒久远，一颗永流传" des2="所有玩家购买" num="5" tips="24" price="960" oldprice="2288" reset="0" sort_id="6"/>
+  <item id="6" type="1" cfg="5171" icon="47" name="新服大卖礼包" des1="精英2升3星、3星升阶必备,赠3级宝石包" des2="所有玩家购买" num="1" tips="0" price="376" oldprice="828" reset="1" sort_id="2"/>
+  <item id="7" type="1" cfg="5173" icon="49" name="精英成长必买礼包1" des1="精英3升4星、4星升阶必备,赠4级宝石包" des2="所有玩家购买" num="1" tips="0" price="376" oldprice="2318" reset="1" sort_id="3"/>
+  <item id="8" type="1" cfg="5174" icon="50" name="精英成长必买礼包2" des1="精英5星以上升阶升星必备,赠4级宝石包" des2="所有玩家购买" num="1" tips="0" price="1376" oldprice="3888" reset="1" sort_id="4"/>
+  <item id="9" type="1" cfg="5175" icon="3146" name="兵长A计划(最强英灵)" des1="兵长碎片2、5级攻击宝石、5级宝石、经验卡" des2="所有玩家购买" num="5" tips="23" price="1998" oldprice="6888" reset="1" sort_id="5"/>
+  <item id="26" type="1" cfg="6083" icon="50" name="四星艾伦礼包" des1="内含四星精英艾伦*1" des2="所有玩家购买" num="1" tips="0" price="3776" oldprice="8688" reset="0" sort_id="12"/>
+  <item id="27" type="1" cfg="6084" icon="50" name="四星米卡萨礼包" des1="内含四星精英米卡萨*1" des2="所有玩家购买" num="1" tips="0" price="3776" oldprice="8688" reset="0" sort_id="13"/>
+  <item id="28" type="1" cfg="6085" icon="50" name="四星阿明礼包" des1="内含四星精英阿明*1" des2="所有玩家购买" num="1" tips="0" price="3776" oldprice="8688" reset="0" sort_id="14"/>
+  <item id="10" type="1" cfg="5150" icon="47" name="vip1礼包" des1="浅尝~酸甜柠檬味的" des2="vip1玩家购买" num="1" tips="0" price="120" oldprice="588" reset="0" sort_id="19"/>
+  <item id="11" type="1" cfg="5151" icon="47" name="vip2礼包" des1="苹果味VIP2礼包" des2="vip2玩家购买" num="1" tips="0" price="240" oldprice="1188" reset="0" sort_id="20"/>
+  <item id="12" type="1" cfg="5152" icon="48" name="vip3礼包" des1="羞涩的VIP3礼包" des2="vip3玩家购买" num="1" tips="0" price="480" oldprice="3688" reset="0" sort_id="21"/>
+  <item id="13" type="1" cfg="5153" icon="48" name="vip4礼包" des1="停不下的VIP4礼包" des2="vip4玩家购买" num="1" tips="0" price="640" oldprice="5888" reset="0" sort_id="22"/>
+  <item id="14" type="1" cfg="5154" icon="49" name="vip5礼包" des1="奔跑的VIP5礼包" des2="vip5玩家购买" num="1" tips="0" price="960" oldprice="9188" reset="0" sort_id="23"/>
+  <item id="15" type="1" cfg="5155" icon="49" name="vip6礼包" des1="根本无法阻止的VIP6礼包" des2="vip6玩家购买" num="1" tips="0" price="1400" oldprice="12888" reset="0" sort_id="24"/>
+  <item id="16" type="1" cfg="5156" icon="50" name="vip7礼包" des1="越来越近的VIP7礼包" des2="vip7玩家购买" num="1" tips="0" price="2000" oldprice="18888" reset="0" sort_id="25"/>
+  <item id="17" type="1" cfg="5157" icon="50" name="vip8礼包" des1="甩不掉的VIP8礼包" des2="vip8玩家购买" num="1" tips="0" price="4000" oldprice="25888" reset="0" sort_id="26"/>
+  <item id="18" type="1" cfg="5158" icon="51" name="vip9礼包" des1="走不动的VIP9礼包" des2="vip9玩家购买" num="1" tips="0" price="7000" oldprice="42688" reset="0" sort_id="27"/>
+  <item id="19" type="1" cfg="5159" icon="51" name="vip10礼包" des1="来自火星的VIP10礼包" des2="vip10玩家购买" num="1" tips="0" price="12400" oldprice="66888" reset="0" sort_id="28"/>
+  <item id="20" type="1" cfg="5160" icon="51" name="vip11礼包" des1="就是这种感觉的VIP11礼包" des2="vip11玩家购买" num="1" tips="0" price="21840" oldprice="126888" reset="0" sort_id="29"/>
+  <item id="21" type="1" cfg="5161" icon="51" name="vip12礼包" des1="在地狱呼唤的VIP12礼包" des2="vip12玩家购买" num="1" tips="0" price="43680" oldprice="322688" reset="0" sort_id="30"/>
+  <item id="22" type="1" cfg="6067" icon="66" name="万事如意(赠绝版门神)" des1="7级宝石*2+橙装材料各50+升星材料*90" des2="所有玩家购买" num="999" tips="0" price="17776" oldprice="42368" reset="1" sort_id="31"/>
+  <item id="23" type="1" cfg="6066" icon="65" name="恭喜发财大礼包" des1="6级宝石+升星材料*30！赠门神碎片各一" des2="所有玩家购买" num="999" tips="23" price="1776" oldprice="4288" reset="1" sort_id="32"/>
+  <item id="24" type="1" cfg="6065" icon="64" name="马上有福礼包" des1="新年马上有礼包：体力50+经验卡5(不限次）" des2="所有玩家购买" num="999" tips="24" price="176" oldprice="428" reset="1" sort_id="33"/>
+  <item id="29" type="1" cfg="6086" icon="3149" name="可爱的梅比斯礼包" des1="如旷野之风一般的梅比斯+经验卡+橙装材料" des2="所有玩家购买" num="1" tips="24" price="13998" oldprice="38888" reset="1" sort_id="12"/>
+  <item id="30" type="1" cfg="6087" icon="3152" name="勇士义彦礼包" des1="一定会打到魔王的勇士义彦+经验卡+橙装材料" des2="所有玩家购买" num="1" tips="24" price="15998" oldprice="19000" reset="1" sort_id="13"/>
+  <item id="31" type="1" cfg="6088" icon="3151" name="阿拉贡大礼包" des1="超强橙色战将阿拉贡+经验卡+橙装材料" des2="所有玩家购买" num="1" tips="0" price="59998" oldprice="82888" reset="1" sort_id="15"/>
+  <item id="32" type="1" cfg="6089" icon="3147" name="弗雷大礼包" des1="超值战将弗雷+经验卡+橙装材料" des2="所有玩家购买" num="1" tips="0" price="15998" oldprice="23888" reset="1" sort_id="14"/>
+  <item id="33" type="1" cfg="6090" icon="49" name="五级宝石礼包" des1="开启获得随机属性五级宝石*2" des2="所有玩家购买" num="999" tips="24" price="400" oldprice="868" reset="1" sort_id="16"/>
+  <item id="34" type="1" cfg="6091" icon="47" name="六级宝石礼包" des1="开启获得随机属性六级宝石*2" des2="所有玩家购买" num="999" tips="24" price="1520" oldprice="3200" reset="1" sort_id="17"/>
+  <item id="35" type="1" cfg="6092" icon="51" name="七级宝石礼包" des1="开启获得随机属性七级宝石*2" des2="所有玩家购买" num="999" tips="0" price="5760" oldprice="8200" reset="1" sort_id="18"/>
+  <item id="36" type="1" cfg="6130" icon="3001" name="经验卡大礼包" des1="开启获得经验卡*10" des2="所有玩家购买" num="5" tips="24" price="140" oldprice="280" reset="1" sort_id="7"/>
+  <item id="37" type="1" cfg="6006" icon="5006" name="6级生命宝石" des1="宝石恒久远，一颗永流传" des2="所有玩家购买" num="5" tips="24" price="640" oldprice="1200" reset="0" sort_id="8"/>
+  <item id="38" type="1" cfg="6026" icon="5026" name="6级防御宝石" des1="宝石恒久远，一颗永流传" des2="所有玩家购买" num="5" tips="24" price="640" oldprice="1200" reset="0" sort_id="9"/>
+  <item id="39" type="1" cfg="6153" icon="50" name="罗塞勋章-史诗*3" des1="徽章魔化12~15级必备" des2="所有玩家购买" num="999" tips="0" price="600" oldprice="1100" reset="1" sort_id="10"/>
+  <item id="40" type="1" cfg="6154" icon="1106" name="罗塞勋章-神话*1" des1="徽章魔化16~20级必备" des2="所有玩家购买" num="999" tips="0" price="1000" oldprice="1960" reset="1" sort_id="11"/>
+</root>
